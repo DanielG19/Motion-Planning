@@ -32,9 +32,14 @@ Using panda as the csv reader, I extract only the first row and separate latitud
 
 ![image](https://user-images.githubusercontent.com/29236973/133879850-f53633c5-5b1c-4fcc-b593-3ff613f3e70c.png)
 
-*determine your local position relative to global home
+*TODO: determine your local position relative to global home
 Using Global_to_local function from Planning_utils.py, I used the global position and the global home, in order to get the local position.
 
 ![image](https://user-images.githubusercontent.com/29236973/133880076-2e6cc159-ccf1-4a5e-bc12-066c97074bca.png)
+
+*TODO: convert start position to current position rather than map center
+Knowing my local position. Then by adding my own offset to the center of the map. I can get the coordinates of where the dron is.
+
+![image](https://user-images.githubusercontent.com/29236973/133880159-09aa0cd2-2249-47a3-a2b7-581932a184cc.png)
 
 
