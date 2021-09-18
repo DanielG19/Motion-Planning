@@ -26,10 +26,15 @@ The "a-star" Algorithm will create the most efficient path depending of the acti
 
 Finally the heuristic function, which is using the "Norm 2", will give me the total values so that i can compare which one of them is the minimal.
 
-#Implementing Your Path Planning Algorithm
+# Implementing Your Path Planning Algorithm
 *TODO: read lat0, lon0 from colliders into floating point values
-Using panda as the csv reader, I extract only the first row and separete latitude and longitude.
+Using panda as the csv reader, I extract only the first row and separate latitude and longitude.
 
 ![image](https://user-images.githubusercontent.com/29236973/133879850-f53633c5-5b1c-4fcc-b593-3ff613f3e70c.png)
+
+*determine your local position relative to global home
+Using Global_to_local function from Planning_utils.py, I used the global position and the global home, in order to get the local position.
+
+![image](https://user-images.githubusercontent.com/29236973/133880076-2e6cc159-ccf1-4a5e-bc12-066c97074bca.png)
 
 
