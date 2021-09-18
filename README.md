@@ -42,6 +42,11 @@ Knowing my local position. Then by adding my own offset to the center of the map
 
 ![image](https://user-images.githubusercontent.com/29236973/133880159-09aa0cd2-2249-47a3-a2b7-581932a184cc.png)
 
+*TODO: This step is to add flexibility to the desired goal location.
+A "goalAsLatLogn" array was created searching a point in the map, then i hardcoded the point in my variable. And finally i used my global_to_local func, and i added the result to my origin point.
+
+![image](https://user-images.githubusercontent.com/29236973/133883037-e1a1d5c2-1f2a-4aae-a299-d05787279676.png)
+
 *TODO: include diagonal motions on the grid that have a cost of sqrt(2)
 
 ![image](https://user-images.githubusercontent.com/29236973/133880262-7ba4c656-db72-4a82-ab81-5c0413864696.png)
