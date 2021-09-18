@@ -1,9 +1,12 @@
 # Motion-Planning
 The starter code is really similar to the backyard code, there are certain difference in the states. But the most important difference is the plan_path function, which is the one in charge of planning the waypoints the dron will take. Also there is the planning_utils.py which contains all the different functions that i can use for my path planning.
+
 PLAN_PATH:
+
 ![image](https://user-images.githubusercontent.com/29236973/133879570-1479ce5c-458a-4c52-a7d0-17a453bb8af5.png)
 
 This function is the one in charge of planning the path, that mean that we will read the map, we will set home (local and global positions), also we assign the altitude of the drone (for our 2.5d map, but mainly for our "configuration space"), the safety distance (for avoiding collitions), the start point and the goal point. Once everything is set up inside this function, we start calling the functions inside "planning_utils" so that we can get the plan that the drone will follow, finally we get the waypoints which are added to the self.waypoints = [], and we start processing the states for the movement of the drone.
+
 PLANNING_UTILS:
 
 ![image](https://user-images.githubusercontent.com/29236973/133879588-05782d7f-646a-45e9-b067-664bd7b40a6a.png)
@@ -27,22 +30,26 @@ The "a-star" Algorithm will create the most efficient path depending of the acti
 Finally the heuristic function, which is using the "Norm 2", will give me the total values so that i can compare which one of them is the minimal.
 
 # Implementing Your Path Planning Algorithm
-*TODO: read lat0, lon0 from colliders into floating point values
-Using panda as the csv reader, I extract only the first row and separate latitude and longitude.
+*TODO: read lat0, lon0 from colliders into floating point values.
+
+Using panda as the csv reader, I extract only the first row and separate latitude and longitude. (This didnt work on the simulator, so i just hardcoded the values)
 
 ![image](https://user-images.githubusercontent.com/29236973/133879850-f53633c5-5b1c-4fcc-b593-3ff613f3e70c.png)
 
-*TODO: determine your local position relative to global home
+*TODO: determine your local position relative to global home.
+
 Using Global_to_local function from Planning_utils.py, I used the global position and the global home, in order to get the local position.
 
 ![image](https://user-images.githubusercontent.com/29236973/133880076-2e6cc159-ccf1-4a5e-bc12-066c97074bca.png)
 
-*TODO: convert start position to current position rather than map center
+*TODO: convert start position to current position rather than map center.
+
 Knowing my local position. Then by adding my own offset to the center of the map. I can get the coordinates of where the dron is.
 
 ![image](https://user-images.githubusercontent.com/29236973/133880159-09aa0cd2-2249-47a3-a2b7-581932a184cc.png)
 
 *TODO: This step is to add flexibility to the desired goal location.
+
 A "goalAsLatLogn" array was created searching a point in the map, then i hardcoded the point in my variable. And finally i used my global_to_local func, and i added the result to my origin point.
 
 ![image](https://user-images.githubusercontent.com/29236973/133883037-e1a1d5c2-1f2a-4aae-a299-d05787279676.png)
@@ -54,7 +61,8 @@ A "goalAsLatLogn" array was created searching a point in the map, then i hardcod
 
 A*star would work the same way, but now it will take diagonal paths into consideration.
 
-*TODO: Cull waypoints from the path
+*TODO: Cull waypoints from the path.
+
 Using Breshenham, i can get a number of cells depending of how many cells i want to check in the path (numCells), then from p1 to p2, i check in my grid if those cells are available for my path, if every single cell is available, then i remove all the cells except the p1 and the p2, then i repeat the same for the next (numCells) cells.
 
 ![image](https://user-images.githubusercontent.com/29236973/133882380-f1390527-f0b8-490b-9121-0d7992d7c967.png)
