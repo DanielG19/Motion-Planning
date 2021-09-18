@@ -42,4 +42,7 @@ Knowing my local position. Then by adding my own offset to the center of the map
 
 ![image](https://user-images.githubusercontent.com/29236973/133880159-09aa0cd2-2249-47a3-a2b7-581932a184cc.png)
 
+*TODO: include diagonal motions on the grid that have a cost of sqrt(2)
+
+![image](https://user-images.githubusercontent.com/29236973/133880262-7ba4c656-db72-4a82-ab81-5c0413864696.png)
 
