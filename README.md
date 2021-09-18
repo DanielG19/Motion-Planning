@@ -45,4 +45,12 @@ Knowing my local position. Then by adding my own offset to the center of the map
 *TODO: include diagonal motions on the grid that have a cost of sqrt(2)
 
 ![image](https://user-images.githubusercontent.com/29236973/133880262-7ba4c656-db72-4a82-ab81-5c0413864696.png)
+![image](https://user-images.githubusercontent.com/29236973/133882150-9d66db3b-d3b5-4d93-b4b6-e4418e25d74e.png)
+
+A*star would work the same way, but now it will take diagonal paths into consideration.
+
+*TODO: Cull waypoints from the path
+Using Breshenham, i can get a number of cells depending of how many cells i want to check in the path (numCells), then from p1 to p2, i check in my grid if those cells are available for my path, if every single cell is available, then i remove all the cells except the p1 and the p2, then i repeat the same for the next (numCells) cells.
+
+![image](https://user-images.githubusercontent.com/29236973/133882380-f1390527-f0b8-490b-9121-0d7992d7c967.png)
 
