@@ -6,6 +6,7 @@ import utm
 
 import numpy as np
 
+
 from planning_utils import a_star, create_grid, find_start_goal,local_to_global,BresenhamFun
 from udacidrone import Drone
 from udacidrone.connection import MavlinkConnection
@@ -124,14 +125,16 @@ class MotionPlanning(Drone):
         self.target_position[2] = TARGET_ALTITUDE
 
         # TODO: read lat0, lon0 from colliders into floating point values
-        # Not really need it
-        #LatAndLon = pd.read_table('colliders.csv', delimiter=' ', usecols=[1, 3], nrows=1, header=None)
-        #latitude = LatAndLon[0][0]
-        #longitude = LatAndLon[0][1]
-        #self.set_home_position(latitude,longitude,0)
+        # Works in my project, but it doesnt work in simulation.
+        # LatAndLon = pd.read_table('colliders.csv', delimiter=' ', usecols=[1, 3], nrows=1, header=None)
+        # latitude = LatAndLon[0][0]
+        # longitude = LatAndLon[0][1]
+        # self.set_home_position(latitude,longitude,0)
+
 
         # TODO: set home position to (lon0, lat0, 0)
-        self.set_home_position(-122.397636,37.792564, 0)
+        self.set_home_position(-122.397550, 37.792564, 0)
+
         # TODO: retrieve current global position
         Global_position = self.global_position
         print(Global_position)
@@ -153,12 +156,13 @@ class MotionPlanning(Drone):
         # TODO: convert start position to current position rather than map center
         grid_start = (int(-(north_offset)+self.local_position[0]), int(-(east_offset)+self.local_position[1]))
 
-        # Set goal as some arbitrary position on the grid
-        grid_goal = (int(-north_offset) + 50, int(-east_offset)+70,TARGET_ALTITUDE)
         # TODO: adapt to set goal as latitude / longitude position and convert
-        goalAsLatLong = local_to_global(grid_goal,Global_position)
-        print(goalAsLatLong)
+        goalAsLatLong = [-122.399368,37.794732,TARGET_ALTITUDE]
+        goalAsLocal = global_to_local(goalAsLatLong,self.global_home)
+        print(goalAsLocal)
 
+        # Set goal as some arbitrary position on the grid
+        grid_goal = (int(-north_offset) + goalAsLocal[0], int(-east_offset)+goalAsLocal[1],TARGET_ALTITUDE)
 
         # Run A* to find a path from start to goal
         # TODO: add diagonal motions with a cost of sqrt(2) to your A* implementation
