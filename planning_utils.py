@@ -1,16 +1,8 @@
-import math
 from enum import Enum
 from queue import PriorityQueue
 import numpy as np
-import utm
-import numpy.linalg as LA
-from skimage.morphology import medial_axis
-from skimage.util import invert
-from queue import Queue
 import math
 from bresenham import bresenham
-
-
 
 def create_grid(data, drone_altitude, safety_distance):
     """
@@ -40,12 +32,12 @@ def create_grid(data, drone_altitude, safety_distance):
         north, east, alt, d_north, d_east, d_alt = data[i, :]
         if alt + d_alt + safety_distance > drone_altitude:
             obstacle = [
-                int(np.clip(north - d_north - safety_distance - north_min, 0, north_size-1)),
-                int(np.clip(north + d_north + safety_distance - north_min, 0, north_size-1)),
-                int(np.clip(east - d_east - safety_distance - east_min, 0, east_size-1)),
-                int(np.clip(east + d_east + safety_distance - east_min, 0, east_size-1)),
+                int(np.clip(north - d_north - safety_distance - north_min, 0, north_size - 1)),
+                int(np.clip(north + d_north + safety_distance - north_min, 0, north_size - 1)),
+                int(np.clip(east - d_east - safety_distance - east_min, 0, east_size - 1)),
+                int(np.clip(east + d_east + safety_distance - east_min, 0, east_size - 1)),
             ]
-            grid[obstacle[0]:obstacle[1]+1, obstacle[2]:obstacle[3]+1] = 1
+            grid[obstacle[0]:obstacle[1] + 1, obstacle[2]:obstacle[3] + 1] = 1
 
     return grid, int(north_min), int(east_min)
 
@@ -62,24 +54,6 @@ class Action(Enum):
     LEFTDOWN = (1, -1, 2 ** (1/2))
     RIGHTDOWN = (1, 1, 2 ** (1/2))
 
-    # Define string characters for each action
-    def __str__(self):
-        if self == self.LEFT:
-            return '<'
-        elif self == self.RIGHT:
-            return '>'
-        elif self == self.UP:
-            return '^'
-        elif self == self.DOWN:
-            return 'v'
-        elif self == self.LEFTUP:
-            return "<^"
-        elif self == self.LEFTDOWN:
-            return "<v"
-        elif self == self.RIGHTUP:
-            return ">^"
-        elif self == self.RIGHTDOWN:
-            return ">v"
     # Assign a new property that returns the cost of an action
     @property
     def cost(self):
@@ -90,14 +64,12 @@ class Action(Enum):
         return (self.value[0], self.value[1])
 
 
-# Define a function that returns a list of valid actions
-# through the grid from the current node
 def valid_actions(grid, current_node):
     """
     Returns a list of valid actions given a grid and current node.
     """
     # First define a list of all possible actions
-    valid = [Action.UP, Action.LEFT, Action.RIGHT, Action.DOWN, Action.LEFTUP,Action.LEFTDOWN,Action.RIGHTDOWN,Action.RIGHTUP]
+    valid = list(Action)
     # Retrieve the grid shape and position of the current node
     n, m = grid.shape[0] - 1, grid.shape[1] - 1 # n = 4, m = 5, if x or y when moving gets autside of the limits, then:
     x, y = current_node
@@ -129,17 +101,15 @@ def valid_actions(grid, current_node):
     if y - 1 < 0 or x + 1 > n or grid[x + 1, y - 1] == 1:
         valid.remove(Action.LEFTDOWN)
 
-
     return valid
 
 
-def a_star(grid, start, goal):
+def a_star(grid, h, start, goal):
     path = []
     path_cost = 0
-    queue = Queue()
+    queue = PriorityQueue()
     queue.put((0, start))
-    visited = set()
-    visited.add(start)
+    visited = set(start)
 
     branch = {}
     found = False
@@ -159,12 +129,10 @@ def a_star(grid, start, goal):
         else:
             for action in valid_actions(grid, current_node):
                 # get the tuple representation
-                Movements = action.delta
-                next_node = (current_node[0] + Movements[0], current_node[1] + Movements[1])
-                # TODO: calculate branch cost (action.cost + g)
-                # TODO: calculate queue cost (action.cost + g + h)
-                branch_cost = action.cost + current_cost
-                queue_cost = action.cost + current_cost + heuristic(current_node,goal)
+                da = action.delta
+                next_node = (current_node[0] + da[0], current_node[1] + da[1])
+                branch_cost = current_cost + action.cost
+                queue_cost = branch_cost + h(next_node, goal)
 
                 if next_node not in visited:
                     visited.add(next_node)
@@ -187,33 +155,8 @@ def a_star(grid, start, goal):
     return path[::-1], path_cost
 
 
-
 def heuristic(position, goal_position):
     return np.linalg.norm(np.array(position) - np.array(goal_position))
-
-def global_to_local(global_position, global_home):
-    """
-    Convert a global position (lon, lat, up) to a local position (north, east, down) relative to the home position.
-    Returns:
-        numpy array of the local position [north, east, down]
-    """
-    (east_home, north_home, _, _) = utm.from_latlon(global_home[1], global_home[0])
-    (east, north, _, _) = utm.from_latlon(global_position[1], global_position[0])
-
-    local_position = np.array([north - north_home, east - east_home, global_home[2]-global_position[2]])
-    return local_position
-
-def local_to_global(local_position, global_home):
-    """
-    Convert a local position (north, east, down) relative to the home position to a global position (lon, lat, up)
-    Returns:
-        numpy array of the global position [longitude, latitude, altitude]
-    """
-    (east_home, north_home, zone_number, zone_letter) = utm.from_latlon(global_home[1], global_home[0])
-    (lat, lon) = utm.to_latlon(east_home + local_position[1], north_home + local_position[0], zone_number, zone_letter)
-
-    lla = np.array([lon, lat, global_home[2]-local_position[2]])
-    return lla
 
 def find_start_goal(skel, start, goal):
     skel_cells = np.transpose(skel.nonzero())
@@ -241,10 +184,13 @@ def BresenhamFun(path,grid,numCells):
             for cell in Tempcells:
                 if grid[cell[0], cell[1]] == 1:
                     CollitionFlag = 1
+                    i = i + numCells - 1
+                    j = j + numCells - 1
                     break
             if CollitionFlag == 0:
                 del cells[i + 1:j]  # "del" means Delete
+                i= i + 1
+                j = j + 1
 
-        i = i + numCells - 1
-        j = j + numCells - 1
+
     return cells;
