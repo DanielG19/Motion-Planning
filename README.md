@@ -32,9 +32,9 @@ Finally the heuristic function, which is using the "Norm 2", will give me the to
 # Implementing Your Path Planning Algorithm
 *TODO: read lat0, lon0 from colliders into floating point values.
 
-Using panda as the csv reader, I extract only the first row and separate latitude and longitude. (This didnt work on the simulator, so i just hardcoded the values)
+I extract only the first row and separate latitude and longitude.
 
-![image](https://user-images.githubusercontent.com/29236973/133879850-f53633c5-5b1c-4fcc-b593-3ff613f3e70c.png)
+![image](https://user-images.githubusercontent.com/29236973/133912605-9ec8ce2c-be05-4a0d-b72c-b4e7d8f5a161.png)
 
 *TODO: determine your local position relative to global home.
 
